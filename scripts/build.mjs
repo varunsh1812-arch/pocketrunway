@@ -3,12 +3,14 @@
 //   dist/artifact.html page body for a Claude artifact (React from cdnjs, per its CSP)
 import { build } from "esbuild";
 import { writeFile, mkdir } from "node:fs/promises";
+import { BOOT_MODE, BAR } from "../src/ui/appearance.js";
 
 const cdnReact = process.argv.includes("--cdn-react");
 // General Sans comes from Fontshare; a Claude artifact only loads Google Fonts, so there it falls back to the system sans.
+// The variable file (@1) covers 200 to 700, so dark mode's lighter body weight (350) is a real cut.
 const FONTS = "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&display=swap";
-const FONTSHARE = "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap";
-const PAPER = "#f8f4f1";
+const FONTSHARE = "https://api.fontshare.com/v2/css?f[]=general-sans@1&display=swap";
+const PAPER = BAR.light;
 const DESC = "PocketRunway: know if your money will last the month. AI spend tagging, a runway forecast and one safe-to-spend number for students on a fixed allowance.";
 const ICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="1" y="1" width="62" height="62" rx="13" fill="#f8f4f1" stroke="#c7bfba" stroke-width="2"/><rect x="12" y="38" width="40" height="8" rx="4" fill="#c7bfba"/><rect x="12" y="38" width="28" height="8" rx="4" fill="#221b19"/><path d="M16 28h10l6-10 6 10h10" fill="none" stroke="#bb3d31" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>')}`;
 
@@ -48,13 +50,13 @@ await mkdir("dist", { recursive: true });
 const standalone = await bundle(false);
 await writeFile(
   "dist/index.html",
-  `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>PocketRunway</title><meta name="description" content="${DESC}"><meta name="theme-color" content="${PAPER}"><link rel="icon" href="${ICON}"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://cdn.fontshare.com" crossorigin><link rel="stylesheet" href="${FONTS}"><link rel="stylesheet" href="${FONTSHARE}"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}${css}</style></head><body><noscript><p class="noscript">PocketRunway runs in your browser and needs JavaScript turned on.</p></noscript><div id="root"></div><script>${standalone}</script></body></html>`,
+  `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>PocketRunway</title><meta name="description" content="${DESC}"><meta name="theme-color" content="${PAPER}"><script>${BOOT_MODE}</script><link rel="icon" href="${ICON}"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://cdn.fontshare.com" crossorigin><link rel="stylesheet" href="${FONTS}"><link rel="stylesheet" href="${FONTSHARE}"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}${css}</style></head><body><noscript><p class="noscript">PocketRunway runs in your browser and needs JavaScript turned on.</p></noscript><div id="root"></div><script>${standalone}</script></body></html>`,
 );
 
 const art = await bundle(true);
 await writeFile(
   "dist/artifact.html",
-  `<title>PocketRunway</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n<meta name="description" content="${DESC}">\n<link rel="stylesheet" href="${FONTS}">\n<style>${css}</style>\n<div id="root"></div>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>\n<script>${art}</script>\n`,
+  `<title>PocketRunway</title>\n<script>${BOOT_MODE}</script>\n<meta name="claude:viewport-fit-sides" content="cover">\n<meta name="description" content="${DESC}">\n<link rel="stylesheet" href="${FONTS}">\n<style>${css}</style>\n<div id="root"></div>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>\n<script>${art}</script>\n`,
 );
 const kb = (s) => `${(Buffer.byteLength(s) / 1024).toFixed(0)} KB`;
 console.log(`dist/index.html ${kb(standalone)} JS · dist/artifact.html ${kb(art)} JS · ${cdnReact ? "(flag ignored: both builds are always written)" : ""}`);

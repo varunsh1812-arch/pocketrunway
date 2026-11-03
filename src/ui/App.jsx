@@ -5,6 +5,7 @@ import {
 } from "../engine/index.js";
 import { Icon, Sheet, Alert, RunwayChart, CategoryBars, WeekdayBars, initials } from "./parts.jsx";
 import { getSample, PERMANENT, errorCopy } from "./claude.js";
+import { MODES, readMode, saveMode, applyMode, deviceDark } from "./appearance.js";
 
 const STORE = "pocketrunway:v1";
 const load = () => {
@@ -75,11 +76,22 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [chat, setChat] = useState([]);
   const [claude, setClaude] = useState({ status: "checking", sample: null, tools: false });
+  const [mode, setMode] = useState(readMode);
   const screenRef = useRef(null);
 
   useEffect(() => {
     save({ source: state.source, csv: state.csv, settings: state.settings, goals: state.goals, overrides: state.overrides, manual: state.manual, aiTags: state.aiTags });
   }, [state]);
+  useEffect(() => {
+    saveMode(mode);
+    applyMode(mode);
+    // "Match device" keeps following the device, e.g. when it turns dark at sunset
+    const q = mode === "system" ? deviceDark() : null;
+    if (!q?.addEventListener) return;
+    const follow = () => applyMode("system");
+    q.addEventListener("change", follow);
+    return () => q.removeEventListener("change", follow);
+  }, [mode]);
   useEffect(() => {
     const onHash = () => {
       const h = location.hash.slice(1);
@@ -269,6 +281,8 @@ export default function App() {
             parsed={parsed}
             demoCsv={demo.csv}
             dispatch={dispatch}
+            mode={mode}
+            setMode={setMode}
             onClose={() => setSheet(null)}
             setToast={setToast}
             go={go}
@@ -975,7 +989,7 @@ function CategorySheet({ txn, onClose, onSave }) {
   );
 }
 
-function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) {
+function DataSheet({ state, parsed, demoCsv, dispatch, mode, setMode, onClose, setToast, go }) {
   const [text, setText] = useState("");
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState(null);
@@ -1111,6 +1125,17 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
           {`Keep spare (buffer): ${rupees(s.buffer)}`}
           <input id="set-buffer" type="range" min="0" max="2000" step="100" value={s.buffer} onChange={(e) => dispatch({ type: "settings", patch: { buffer: Number(e.target.value) } })} />
         </label>
+        <div className="choice" role="radiogroup" aria-labelledby="mode-h">
+          <span id="mode-h">Appearance</span>
+          <div className="chips">
+            {MODES.map(([k, label]) => (
+              <label key={k} className="chip" data-on={mode === k}>
+                <input type="radio" name="mode" value={k} className="visually-hidden" checked={mode === k} onChange={() => setMode(k)} />
+                {label}
+              </label>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="well privacy">
