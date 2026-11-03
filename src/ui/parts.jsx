@@ -50,8 +50,8 @@ export function Sheet({ title, onClose, children }) {
       <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="grab" />
         <div className="row between">
-          <h2 className="h2">{title}</h2>
-          <button className="iconbtn" onClick={onClose} aria-label="Close">
+          <h2 className="sheet-title">{title}</h2>
+          <button type="button" className="iconbtn" onClick={onClose} aria-label="Close">
             <Icon name="x" size={18} />
           </button>
         </div>
@@ -65,13 +65,10 @@ const SEV_LABEL = { critical: "Act now", warning: "Watch", info: "Heads-up", goo
 export function Alert({ a }) {
   return (
     <div className="alert" data-sev={a.severity}>
-      <div className="stripe" />
-      <div>
-        <div className="t">
-          <span className="sev">{SEV_LABEL[a.severity]}</span>
-          <span>{a.title}</span>
-        </div>
-        <div className="b">{a.body}</div>
+      <span className="sev">{SEV_LABEL[a.severity]}</span>
+      <div className="min0">
+        <p className="t">{a.title}</p>
+        <p className="b">{a.body}</p>
       </div>
     </div>
   );
@@ -126,44 +123,44 @@ export function RunwayChart({ a }) {
     const b = band.find((p) => p.x === hover);
     const pr = proj.find((p) => p.x === hover);
     if (act && hover < cycle.dayIndex) hv = { day: hover, date, y: act.y, text: `${rupees(act.y)} at day end`, kind: "Actual" };
-    else if (pr) hv = { day: hover, date, y: pr.y, text: `${rupees(pr.y)} expected`, sub: b ? `likely ${rupees(b.lo)} to ${rupees(b.hi)}` : null, kind: "Forecast" };
+    else if (pr) hv = { day: hover, date, y: pr.y, text: `${rupees(pr.y)} expected`, sub: b ? `Likely ${rupees(b.lo)} to ${rupees(b.hi)}` : null, kind: "Forecast" };
   }
   return (
-    <div ref={wrap} style={{ position: "relative" }}>
+    <div ref={wrap} className="chart-wrap">
       <svg className="chart" viewBox={`0 0 ${W} ${H}`} onPointerMove={onMove} onPointerLeave={() => setHover(null)} role="img" aria-label={`Balance over the month. Money lasts until day ${forecast.lastFundedDay} of ${L}.`}>
         {ticks.map((v) => (
           <g key={v}>
-            <line x1={m.l} x2={W - m.r} y1={sy(v)} y2={sy(v)} stroke={v === 0 ? "#8b93a3" : "#233049"} strokeWidth={v === 0 ? 1.2 : 1} strokeDasharray={v === 0 ? "" : "2 4"} />
+            <line x1={m.l} x2={W - m.r} y1={sy(v)} y2={sy(v)} className={v === 0 ? "zero" : "grid"} strokeWidth={v === 0 ? 1.2 : 1} />
             <text x={m.l - 6} y={sy(v) + 4} textAnchor="end">{shortMoney(v)}</text>
           </g>
         ))}
         {xTicks.map((d, i) => (
           <text key={d} x={sx(d)} y={H - 8} textAnchor={i === 0 ? "start" : i === xTicks.length - 1 ? "end" : "middle"}>{`Day ${d}`}</text>
         ))}
-        <path d={bandPath} fill="rgba(232,182,58,0.18)" stroke="none" />
-        <path d={line(proj)} fill="none" stroke="#e8b63a" strokeWidth="2" strokeDasharray="5 5" />
-        <path d={line(actual)} fill="none" stroke="#e8b63a" strokeWidth="2.4" />
-        <circle cx={sx(startX)} cy={sy(a.startBalance)} r="4.5" fill="#e8b63a" stroke="#0f1729" strokeWidth="2" />
-        <line x1={sx(cycle.dayIndex - 0.5)} x2={sx(cycle.dayIndex - 0.5)} y1={m.t} y2={H - m.b} stroke="#ffffff" strokeOpacity="0.25" />
-        <text x={sx(cycle.dayIndex - 0.5) + 4} y={m.t + 10} style={{ fill: "#d3d6dc" }}>Today</text>
+        <path d={bandPath} className="band" />
+        <path d={line(proj)} className="proj" strokeWidth="2" strokeDasharray="5 5" />
+        <path d={line(actual)} className="actual" strokeWidth="2" />
+        <circle cx={sx(startX)} cy={sy(a.startBalance)} r="4.5" className="dot" strokeWidth="2" />
+        <line x1={sx(cycle.dayIndex - 0.5)} x2={sx(cycle.dayIndex - 0.5)} y1={m.t} y2={H - m.b} className="todayline" />
+        <text x={sx(cycle.dayIndex - 0.5) + 4} y={m.t + 10} className="todaytext">Today</text>
         {runPt && (
           <g>
-            <circle cx={sx(run + 0.5)} cy={sy(0)} r="5.5" fill="#e4574d" stroke="#0f1729" strokeWidth="2" />
-            <text x={sx(run + 0.5) - 9} y={sy(0) + 17} textAnchor="end" style={{ fill: "#e4574d", fontWeight: 700 }}>{`Runs out after Day ${run}`}</text>
+            <circle cx={sx(run + 0.5)} cy={sy(0)} r="5.5" className="runout" strokeWidth="2" />
+            <text x={sx(run + 0.5) - 9} y={sy(0) + 17} textAnchor="end" className="runtext">{`Runs out after Day ${run}`}</text>
           </g>
         )}
         {hv && (
           <g>
-            <line x1={sx(hv.day)} x2={sx(hv.day)} y1={m.t} y2={H - m.b} stroke="#d3d6dc" strokeOpacity="0.5" />
-            <circle cx={sx(hv.day)} cy={sy(hv.y)} r="4" fill="#ffffff" stroke="#0f1729" strokeWidth="2" />
+            <line x1={sx(hv.day)} x2={sx(hv.day)} y1={m.t} y2={H - m.b} className="hoverline" />
+            <circle cx={sx(hv.day)} cy={sy(hv.y)} r="4" className="hoverdot" strokeWidth="2" />
           </g>
         )}
       </svg>
       {hv && (
-        <div className="tip" style={{ left: `${Math.min(70, Math.max(2, (sx(hv.day) / W) * 100 - 15))}%`, top: 4 }}>
-          <div className="muted">{`Day ${hv.day} · ${shortDate(hv.date)} · ${hv.kind}`}</div>
+        <div className="tip" style={{ left: `${Math.min(70, Math.max(2, (sx(hv.day) / W) * 100 - 15))}%` }}>
+          <div>{`${hv.kind} for Day ${hv.day} (${shortDate(hv.date)})`}</div>
           <b>{hv.text}</b>
-          {hv.sub && <div className="muted">{hv.sub}</div>}
+          {hv.sub && <div>{hv.sub}</div>}
         </div>
       )}
       <div className="legend">
@@ -196,8 +193,10 @@ export function CategoryBars({ pace, dayIndex, onPick, active }) {
         return (
           <button
             key={r.id}
+            type="button"
             className="barrow"
-            style={{ background: "none", border: 0, padding: 0, textAlign: "left", opacity: active && active !== r.id ? 0.55 : 1 }}
+            data-dim={active && active !== r.id ? "true" : undefined}
+            aria-pressed={active === r.id}
             onClick={() => onPick?.(r.id)}
             onPointerEnter={() => setTip(r.id)}
             onPointerLeave={() => setTip(null)}
@@ -206,19 +205,19 @@ export function CategoryBars({ pace, dayIndex, onPick, active }) {
             <span className="l">{r.id === "other" ? "Other and not sure yet" : r.label}</span>
             <span className="v">
               {rupees(r.now)}
-              {delta != null && r.id !== "other" && Math.abs(delta) >= 10 && <span className={delta > 0 ? "crit" : "good"}>{` ${delta > 0 ? "+" : ""}${delta}%`}</span>}
+              {delta != null && r.id !== "other" && Math.abs(delta) >= 10 && <span className="d" data-up={delta > 0 ? "true" : undefined}>{` ${delta > 0 ? "+" : ""}${delta}%`}</span>}
             </span>
             <span className="track">
               <span className="fill" style={{ width: `${pctNow}%` }} />
               {pctUsual != null && <span className="tick" style={{ left: `calc(${pctUsual}% - 1px)` }} />}
             </span>
-            {tip === r.id && r.usual != null && <span className="note" style={{ gridColumn: "1 / -1" }}>{`Usually ${rupees(r.usual)} by Day ${dayIndex} · ${r.count} spend${r.count === 1 ? "" : "s"} this month`}</span>}
+            {tip === r.id && r.usual != null && <span className="note">{`Usually ${rupees(r.usual)} by Day ${dayIndex}, ${r.count} spend${r.count === 1 ? "" : "s"} this month`}</span>}
           </button>
         );
       })}
       <div className="legend">
         <span><i />This month</span>
-        <span><i style={{ width: 3, height: 12, background: "#ffffff" }} />Usual by Day {dayIndex}</span>
+        <span><i className="tickswatch" />Usual by Day {dayIndex}</span>
       </div>
     </div>
   );

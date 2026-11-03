@@ -1,0 +1,28 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "app",
+  "shape": "app screen",
+  "theme": "coral",
+  "axes": "light/grotesk-sans/warm",
+  "hero": "none (app screen)",
+  "nav": "kept: a top bar and five bottom tabs; on desktop the story is printed on the desk beside the app sheet",
+  "footer": "none",
+  "imagery": "product: the app itself, no photographs",
+  "photos": [],
+  "entry": "today",
+  "fingerprint": "app-screen/coral/light/grotesk-sans/warm/slip-and-statement",
+  "sections": [
+   "today: slip, runway, fix it, insights, goal, ask",
+   "spends: month, review queue, filters, statement",
+   "forecast: chart sheet, stats, bills, how it works, backtest, tagging",
+   "goals: index cards, new goal",
+   "ask: chat, chips, composer"
+  ],
+  "signature": "the day's safe-to-spend printed on a cotton slip, the month's runway ruled in ink under it",
+  "waived": [],
+  "prompt": "UPI payments and budgeting app for Indian students on a monthly allowance",
+  "date": "2026-11-03"
+ }
+]

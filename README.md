@@ -59,7 +59,7 @@ src/engine/   pure JavaScript, no dependencies, fully unit-tested
   insights.js    safe-to-spend, category pace, alerts, goals, what-ifs
   assistant.js   on-device intent engine, Claude prompt + tools
   synth.js       Riya's synthetic statement
-src/ui/       React UI (App.jsx, parts.jsx, styles.css, claude.js)
+src/ui/       React UI (App.jsx, parts.jsx, claude.js); styles.css imports tokens.css (the Coral palette, type and spacing tokens) and base.css
 tests/        node:test suite (18 tests), run in CI on every push
 scripts/      build.mjs (esbuild), export-sample.mjs, calibrate.mjs (picks the demo seed)
 sample-data/  synthetic statements in HDFC and SBI layouts to try the import

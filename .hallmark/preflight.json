@@ -1,0 +1,12 @@
+{
+  "scanned": "2026-11-03",
+  "findings": {
+    "fonts": "Barlow Condensed + Inter from Google Fonts (scripts/build.mjs FONTS)",
+    "palette": "navy and gold hex custom properties (src/ui/styles.css :root), 13 hex literals in the SVG charts (src/ui/parts.jsx)",
+    "motion": "none beyond a loader blink and a width transition on the goal bar",
+    "spacing": "ad hoc px values, no scale",
+    "framework": "React 18.3.1 bundled by esbuild 0.23.1 into one static HTML file plus a Claude artifact body; hash tabs, no router"
+  },
+  "preserve": ["every screen, feature, figure, field and handler", "the React + esbuild single-file build and both outputs", "the engine and its 18 tests"],
+  "introduce": ["Coral tokens and the shared app scale", "General Sans and Geist Mono", "cotton stock surfaces and letterpress controls", "eight-state controls and focus rings"]
+}

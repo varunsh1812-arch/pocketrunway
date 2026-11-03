@@ -228,18 +228,16 @@ export default function App() {
       <Story a={a} evalScores={evalScores} isDemo={isDemo} />
       <div className="app">
         <header className="topbar">
-          <div>
-            <div className="brand">
-              Pocket<em>Runway</em>
-            </div>
-            <div className="greet">{`Hi ${name} · Day ${a.cycle.dayIndex} of ${a.cycle.length}`}</div>
+          <div className="min0">
+            <p className="brand">PocketRunway</p>
+            <p className="greet">{`Hi ${name}, it’s Day ${a.cycle.dayIndex} of ${a.cycle.length}`}</p>
           </div>
           <div className="spacer" />
-          <span className={`pill ${isDemo ? "gold" : ""}`}>{isDemo ? "Demo data" : "Your statement"}</span>
-          <button className="iconbtn mobile-only" onClick={() => setSheet({ kind: "about" })} aria-label="About PocketRunway">
+          <span className={`tag ${isDemo ? "is-on" : ""}`}>{isDemo ? "Demo data" : "Your statement"}</span>
+          <button type="button" className="iconbtn mobile-only" onClick={() => setSheet({ kind: "about" })} aria-label="About PocketRunway">
             <Icon name="info" size={18} />
           </button>
-          <button className="iconbtn" onClick={() => setSheet({ kind: "data" })} aria-label="Data and settings">
+          <button type="button" className="iconbtn" onClick={() => setSheet({ kind: "data" })} aria-label="Data and settings">
             <Icon name="data" size={18} />
           </button>
         </header>
@@ -248,7 +246,7 @@ export default function App() {
         </main>
         <nav className="tabs" aria-label="Sections">
           {TABS.map(([k, label, icon]) => (
-            <button key={k} className="tab" aria-current={tab === k ? "page" : undefined} onClick={() => go(k)}>
+            <button type="button" key={k} className="tab" aria-current={tab === k ? "page" : undefined} onClick={() => go(k)}>
               <Icon name={icon} size={21} />
               {label}
             </button>
@@ -295,9 +293,9 @@ export default function App() {
 function Story(props) {
   return (
     <aside className="story" aria-label="About PocketRunway">
-      <div className="kicker">Group 8 · Innovation &amp; Entrepreneurship · Assignment 2</div>
-      <h1>POCKETRUNWAY</h1>
+      <h1 className="story-name">PocketRunway</h1>
       <StoryBody {...props} />
+      <p className="note story-course">Group 8, Innovation &amp; Entrepreneurship, Assignment 2.</p>
     </aside>
   );
 }
@@ -305,59 +303,58 @@ function Story(props) {
 function StoryBody({ a, evalScores, isDemo }) {
   const bt = a.backtest;
   return (
-    <div>
+    <div className="story-body">
       <p className="tagline">Know if your money will last the month, before it runs out.</p>
-      <div className="rule" />
       <p className="lede">
         An AI-powered finance app for students and first-time earners. It reads your spending, forecasts the day your money runs out, and gives you one daily
         number: what you can safely spend today.
       </p>
-      <div className="label" style={{ marginBottom: 8 }}>
-        What the AI does, measured
+      <div className="ai">
+        <h2 className="label">What the AI does, measured</h2>
+        <dl className="ai-list">
+          <div className="ai-row">
+            <dt>
+              <Icon name="tag" size={18} />
+              <span>
+                <b>Categorises spends</b>
+                <span className="what">Brand rules plus a Naive Bayes model on payee names</span>
+              </span>
+            </dt>
+            <dd>
+              <span className="metric">{pct(evalScores.accuracy)}</span>
+              <span className="metric-note">{`on ${evalScores.nTest} unseen payees`}</span>
+            </dd>
+          </div>
+          <div className="ai-row">
+            <dt>
+              <Icon name="chart" size={18} />
+              <span>
+                <b>Forecasts month-end</b>
+                <span className="what">Pace model with Monte Carlo range</span>
+              </span>
+            </dt>
+            <dd>
+              <span className="metric">{bt.maeModel != null ? `±${bt.maeModel.toFixed(1)}d` : "n/a"}</span>
+              <span className="metric-note">{bt.maeNaive != null ? `vs ±${bt.maeNaive.toFixed(1)}d naive, ${bt.cases.length} months` : "needs 2+ months"}</span>
+            </dd>
+          </div>
+          <div className="ai-row">
+            <dt>
+              <Icon name="spark" size={18} />
+              <span>
+                <b>Explains in plain words</b>
+                <span className="what">Claude with 4 app tools, on-device fallback</span>
+              </span>
+            </dt>
+            <dd>
+              <span className="metric">Ask</span>
+              <span className="metric-note">“Why am I low?”</span>
+            </dd>
+          </div>
+        </dl>
       </div>
-      <div className="ai-cards">
-        <div className="ai-card">
-          <div className="ic">
-            <Icon name="tag" />
-          </div>
-          <div>
-            <b>Categorises spends</b>
-            <span>Brand rules plus a Naive Bayes model on payee names</span>
-          </div>
-          <div className="metric num">
-            {pct(evalScores.accuracy)}
-            <small>{`on ${evalScores.nTest} unseen payees`}</small>
-          </div>
-        </div>
-        <div className="ai-card">
-          <div className="ic">
-            <Icon name="chart" />
-          </div>
-          <div>
-            <b>Forecasts month-end</b>
-            <span>Pace model with Monte Carlo range</span>
-          </div>
-          <div className="metric num">
-            {bt.maeModel != null ? `±${bt.maeModel.toFixed(1)}d` : "n/a"}
-            <small>{bt.maeNaive != null ? `vs ±${bt.maeNaive.toFixed(1)}d naive, ${bt.cases.length} months` : "needs 2+ months"}</small>
-          </div>
-        </div>
-        <div className="ai-card">
-          <div className="ic">
-            <Icon name="spark" />
-          </div>
-          <div>
-            <b>Explains in plain words</b>
-            <span>Claude with 4 app tools, on-device fallback</span>
-          </div>
-          <div className="metric">
-            Ask
-            <small>“Why am I low?”</small>
-          </div>
-        </div>
-      </div>
-      <div className="foot">
-        <p>{isDemo ? "Riya is a fictional persona. Her statement is synthetic: 5 months of student UPI spends generated for this demo." : "You're viewing your own statement. It stays in this browser."}</p>
+      <div className="story-foot">
+        <p>{isDemo ? "Riya is a fictional persona. Her statement is synthetic: 5 months of student UPI spends generated for this demo." : "You’re viewing your own statement. It stays in this browser."}</p>
         <p>Budgeting help only, not investment advice. Statements never leave the browser; the assistant sends Claude a summary only when you ask a question.</p>
       </div>
     </div>
@@ -375,113 +372,145 @@ function Today({ a, name, onAsk, go }) {
   const goal = a.goals[0];
   const used = safe.daily > 0 ? Math.min(1, safe.spentToday / safe.daily) : 1;
   const others = a.alerts.filter((x) => x.id !== "runway");
+  const money = rupees(safe.daily);
+  const neg = money.startsWith("−");
   return (
     <>
-      <section className="card hero" aria-labelledby="safe-h">
-        <div className="label" id="safe-h">
+      <section className="stock slip" aria-labelledby="safe-h">
+        <h2 className="label" id="safe-h">
           Safe to spend today
-        </div>
-        <div className="big num">{rupees(safe.daily)}</div>
+        </h2>
+        <p className="price">
+          <span className="unit">{neg ? "−₹" : "₹"}</span>
+          {money.slice(neg ? 2 : 1)}
+        </p>
         <div className="meter" aria-hidden="true">
-          <i style={{ width: `${used * 100}%`, background: safe.leftToday < 0 ? "var(--crit)" : undefined }} />
+          <i style={{ width: `${used * 100}%` }} data-over={safe.leftToday < 0 ? "true" : undefined} />
         </div>
-        <p className="sub" style={{ marginTop: 8 }}>
+        <p className="sub">
           {safe.daily > 0
-            ? `${rupees(safe.spentToday)} spent · ${safe.leftToday >= 0 ? `${rupees(safe.leftToday)} left today` : `${rupees(-safe.leftToday)} over`}`
+            ? `${rupees(safe.spentToday)} spent, ${safe.leftToday >= 0 ? `${rupees(safe.leftToday)} left today` : `${rupees(-safe.leftToday)} over`}`
             : "Nothing spare today. Essentials only until your allowance."}
         </p>
-        <p className="note" style={{ marginTop: 6 }}>{`Keeps ${rupees(safe.buffer)} spare and sets aside ${rupees(safe.billTotal)} for bills.`}</p>
+        <p className="note">{`Keeps ${rupees(safe.buffer)} spare and sets aside ${rupees(safe.billTotal)} for bills.`}</p>
       </section>
 
-      <section className="card" aria-labelledby="runway-h">
+      <section className="block" aria-labelledby="runway-h">
         <div className="row between">
-          <div className="label" id="runway-h">
+          <h2 className="label" id="runway-h">
             Your money lasts until
+          </h2>
+          <span className="tag">{`Next allowance ${shortDate(cycle.next)}`}</span>
+        </div>
+        <p className="figure-l">
+          {forecast.lastFundedDay >= cycle.length ? `Day ${cycle.length}` : `Day ${forecast.lastFundedDay}`}
+          <span className="of">{`of ${cycle.length}`}</span>
+        </p>
+        <div>
+          <div className="runway" role="img" aria-label={`Funded until day ${forecast.lastFundedDay} of ${cycle.length}. Today is day ${cycle.dayIndex}.`}>
+            <div className="fund" style={{ width: `${fundedPct}%` }} />
+            <div className="today" style={{ left: `${todayPct}%` }} />
           </div>
-          <span className="pill">{`Next allowance ${shortDate(cycle.next)}`}</span>
+          <div className="runway-scale">
+            <span style={{ left: 0 }}>Day 1</span>
+            {shortBy > 0 && shortBy < cycle.length - 3 && (
+              <span style={{ left: `${fundedPct}%` }}>
+                <b>{`Day ${forecast.lastFundedDay}`}</b>
+              </span>
+            )}
+            <span style={{ left: "100%" }}>{`Day ${cycle.length}`}</span>
+          </div>
         </div>
-        <div className="row" style={{ alignItems: "baseline", gap: 8, marginTop: 4 }}>
-          <span className="h2" style={{ fontSize: 34 }}>{forecast.lastFundedDay >= cycle.length ? `Day ${cycle.length}` : `Day ${forecast.lastFundedDay}`}</span>
-          <span className="muted">{`of ${cycle.length}`}</span>
-        </div>
-        <div className="runway" role="img" aria-label={`Funded until day ${forecast.lastFundedDay} of ${cycle.length}. Today is day ${cycle.dayIndex}.`}>
-          <div className="fund" style={{ width: `${fundedPct}%` }} />
-          <div className="today" style={{ left: `${todayPct}%` }} />
-        </div>
-        <div className="runway-scale num">
-          <span style={{ left: 0 }}>Day 1</span>
-          {shortBy > 0 && shortBy < cycle.length - 3 && (
-            <span style={{ left: `${fundedPct}%` }}>
-              <b>{`Day ${forecast.lastFundedDay}`}</b>
+        <p className="status">
+          <Icon name={shortBy > 0 ? "alert" : "check"} size={18} />
+          {shortBy > 0 ? (
+            <span>{`Short by ${shortBy} day${shortBy > 1 ? "s" : ""} at the current pace`}</span>
+          ) : (
+            <span>
+              <span className="pressed">On track</span> to your next allowance
             </span>
           )}
-          <span style={{ left: "100%" }}>{`Day ${cycle.length}`}</span>
-        </div>
-        <div className={`status ${shortBy > 0 ? "crit" : "good"}`}>
-          <Icon name={shortBy > 0 ? "alert" : "check"} size={18} />
-          <span>{shortBy > 0 ? `Short by ${shortBy} day${shortBy > 1 ? "s" : ""} at the current pace` : "On track to your next allowance"}</span>
-        </div>
-        <p className="note" style={{ marginTop: 4 }}>
-          {`Likely Day ${forecast.mc.p10}–${Math.min(cycle.length, forecast.mc.p90)} · ${pct(forecast.mc.probRunout)} chance of running short · you average ${rupees(forecast.level)} a day`}
         </p>
+        <dl className="facts">
+          <div>
+            <dt>Likely</dt>
+            <dd>{`Day ${forecast.mc.p10} to ${Math.min(cycle.length, forecast.mc.p90)}`}</dd>
+          </div>
+          <div>
+            <dt>Chance of running short</dt>
+            <dd>{pct(forecast.mc.probRunout)}</dd>
+          </div>
+          <div>
+            <dt>You average</dt>
+            <dd>{`${rupees(forecast.level)} a day`}</dd>
+          </div>
+        </dl>
       </section>
 
       {shortBy > 0 && (
-        <section className="card" aria-labelledby="fix-h">
-          <div className="label" id="fix-h">
+        <section className="well" aria-labelledby="fix-h">
+          <h2 className="label" id="fix-h">
             Fix it
-          </div>
-          <div className="row between" style={{ marginTop: 10, flexWrap: "wrap" }}>
-            <div style={{ minWidth: 0 }}>
-              <div className="h3">Skip food orders</div>
+          </h2>
+          <div className="fix-row">
+            <div className="min0">
+              <p className="title">Skip food orders</p>
               <p className="sub">{`About ${rupees(a.levers.order)} saved each`}</p>
             </div>
             <div className="stepper" role="group" aria-label="Orders to skip">
-              <button onClick={() => setSkips((k) => Math.max(0, k - 1))} aria-label="Skip one fewer">
+              <button type="button" onClick={() => setSkips((k) => Math.max(0, k - 1))} aria-label="Skip one fewer">
                 −
               </button>
               <output aria-live="polite">{skips}</output>
-              <button onClick={() => setSkips((k) => Math.min(20, k + 1))} aria-label="Skip one more">
+              <button type="button" onClick={() => setSkips((k) => Math.min(20, k + 1))} aria-label="Skip one more">
                 +
               </button>
             </div>
           </div>
-          <p className="status" style={{ marginTop: 8 }}>
-            <Icon name="bolt" size={18} className="gold" />
+          <p className="status">
+            <Icon name="bolt" size={18} />
             <span>{skipDay >= cycle.length ? `Lasts to Day ${cycle.length}. You make it.` : `Lasts to Day ${skipDay} (${skipDay - forecast.lastFundedDay >= 0 ? "+" : ""}${skipDay - forecast.lastFundedDay} days)`}</span>
           </p>
-          <p className="sub" style={{ marginTop: 6 }}>{`Or hold to ${rupees(safe.daily)} a day and you reach Day ${cycle.length} with ${rupees(safe.buffer)} to spare.`}</p>
+          <p className="sub">{`Or hold to ${rupees(safe.daily)} a day and you reach Day ${cycle.length} with ${rupees(safe.buffer)} to spare.`}</p>
         </section>
       )}
 
       {others.length > 0 && (
-        <section className="stack" aria-label="Insights">
-          {others.map((x) => (
-            <Alert key={x.id} a={x} />
-          ))}
+        <section className="block" aria-label="Insights">
+          <ul className="alerts">
+            {others.map((x) => (
+              <li key={x.id}>
+                <Alert a={x} />
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
       {goal && (
-        <button className="card goal" style={{ textAlign: "left", border: 0 }} onClick={() => go("goals")}>
+        <section className="stock goal-sum" aria-labelledby="goal-sum-h">
           <div className="row between">
-            <div className="h3">{goal.name}</div>
-            <span className="muted num">{`${rupees(goal.saved)} of ${rupees(goal.target)}`}</span>
+            <h2 className="title" id="goal-sum-h">
+              <button type="button" className="open" onClick={() => go("goals")}>
+                {goal.name}
+              </button>
+            </h2>
+            <span className="mono">{`${rupees(goal.saved)} of ${rupees(goal.target)}`}</span>
           </div>
-          <div className="bar">
+          <div className="bar" aria-hidden="true">
             <i style={{ width: `${goal.progress * 100}%` }} />
           </div>
           <p className="sub">{`${rupees(goal.perWeek)} a week reaches it by ${shortDate(goal.deadline)}.`}</p>
-        </button>
+        </section>
       )}
 
-      <section aria-label="Ask PocketRunway">
-        <div className="label" style={{ marginBottom: 8 }}>
+      <section className="block" aria-labelledby="ask-h">
+        <h2 className="label" id="ask-h">
           Ask
-        </div>
+        </h2>
         <div className="chips">
           {["Why am I low?", "Can I afford a ₹1,200 concert ticket?", "How much can I spend this weekend?"].map((q) => (
-            <button key={q} className="chip" onClick={() => onAsk(q)}>
+            <button type="button" key={q} className="chip" onClick={() => onAsk(q)}>
               {q}
             </button>
           ))}
@@ -512,112 +541,110 @@ function Spends({ a, txns, unsure, claude, tagging, onTag, onPick }) {
   const present = new Set(txns.filter((t) => t.date >= from).map((t) => t.category));
   return (
     <>
-      <section className="card">
+      <section className="block first" aria-labelledby="month-h">
         <div className="row between">
-          <div className="label">This month so far</div>
-          <span className="pill">{`Day ${a.cycle.dayIndex} of ${a.cycle.length}`}</span>
+          <h2 className="label" id="month-h">
+            This month so far
+          </h2>
+          <span className="tag">{`Day ${a.cycle.dayIndex} of ${a.cycle.length}`}</span>
         </div>
-        <div className="row" style={{ gap: 18, margin: "8px 0 14px" }}>
+        <dl className="pair">
           <div>
-            <div className="h2 num">{rupees(a.spentThisCycle)}</div>
-            <span className="note">spent</span>
+            <dt>Spent</dt>
+            <dd>{rupees(a.spentThisCycle)}</dd>
           </div>
           <div>
-            <div className="h2 num good">{rupees(a.inThisCycle)}</div>
-            <span className="note">came in</span>
+            <dt>Came in</dt>
+            <dd className="in">{rupees(a.inThisCycle)}</dd>
           </div>
-        </div>
+        </dl>
         <CategoryBars pace={a.pace} dayIndex={a.cycle.dayIndex} active={filter} onPick={(id) => setFilter((f) => (f === id ? null : id))} />
       </section>
 
       {unsure.length > 0 && (
-        <section className="card" style={{ borderLeft: "3px solid var(--warn)" }}>
-          <div className="row between" style={{ alignItems: "flex-start", gap: 12 }}>
-            <div>
-              <div className="h3">{`${unsure.length} spend${unsure.length > 1 ? "s" : ""} need a second look`}</div>
-              <p className="sub">The model hasn't seen these payees before, so they're held out of your categories.</p>
-            </div>
-          </div>
-          <div className="row" style={{ marginTop: 10, flexWrap: "wrap" }}>
+        <section className="well" aria-labelledby="review-h">
+          <h2 className="title" id="review-h">{`${unsure.length} spend${unsure.length > 1 ? "s" : ""} need a second look`}</h2>
+          <p className="sub">The model hasn’t seen these payees before, so they’re held out of your categories.</p>
+          <div className="actions">
             {claude.status === "ready" && (
-              <button className="btn primary small" onClick={onTag} disabled={tagging}>
+              <button type="button" className="btn primary small" onClick={onTag} disabled={tagging} aria-busy={tagging || undefined}>
                 <Icon name="spark" size={16} />
                 {tagging ? "Asking Claude…" : "Tag with Claude"}
               </button>
             )}
-            <button className="btn small" onClick={() => setFilter("unsure")}>
+            <button type="button" className="btn small" onClick={() => setFilter("unsure")}>
               Review them
             </button>
           </div>
-          {claude.status !== "ready" && <p className="note" style={{ marginTop: 8 }}>Inside the Claude app, Claude can tag these for you.</p>}
+          {claude.status !== "ready" && <p className="note">Inside the Claude app, Claude can tag these for you.</p>}
         </section>
       )}
 
       <div className="chips" role="group" aria-label="Filter by category">
-        <button className="chip" aria-pressed={!filter} onClick={() => setFilter(null)}>
+        <button type="button" className="chip" aria-pressed={!filter} onClick={() => setFilter(null)}>
           All
         </button>
         {unsure.length > 0 && (
-          <button className="chip" aria-pressed={filter === "unsure"} onClick={() => setFilter("unsure")}>
+          <button type="button" className="chip" aria-pressed={filter === "unsure"} onClick={() => setFilter("unsure")}>
             Needs a look
           </button>
         )}
         {CATEGORIES.filter((c) => present.has(c.id)).map((c) => (
-          <button key={c.id} className="chip" aria-pressed={filter === c.id} onClick={() => setFilter(c.id)}>
+          <button type="button" key={c.id} className="chip" aria-pressed={filter === c.id} onClick={() => setFilter(c.id)}>
             {c.short}
           </button>
         ))}
         {present.has("income") && (
-          <button className="chip" aria-pressed={filter === "income"} onClick={() => setFilter("income")}>
+          <button type="button" className="chip" aria-pressed={filter === "income"} onClick={() => setFilter("income")}>
             Money in
           </button>
         )}
       </div>
 
-      <section className="card" style={{ paddingTop: 6, paddingBottom: 6 }} aria-label="Transactions">
-        {groups.length === 0 && <p className="sub" style={{ padding: "12px 0" }}>No transactions match this filter.</p>}
+      <section className="stock statement" aria-label="Transactions">
+        {groups.length === 0 && <p className="sub empty">No transactions match this filter.</p>}
         {groups.map((g) => {
           const out = g.items.filter((t) => t.direction === "debit").reduce((s, t) => s + t.amount, 0);
+          const dayN = g.date >= a.cycle.start ? diffDays(g.date, a.cycle.start) + 1 : null;
           return (
             <div className="daygroup" key={g.date}>
               <div className="dayhead">
-                <span>{`${shortDate(g.date)} · Day ${diffDays(g.date, a.cycle.start) + 1 > 0 && g.date >= a.cycle.start ? diffDays(g.date, a.cycle.start) + 1 : "–"}`}</span>
-                <span className="num">{out ? `−${rupees(out)}` : ""}</span>
+                <span>{shortDate(g.date)}</span>
+                {dayN != null && <span className="dn">{`Day ${dayN}`}</span>}
+                <span className="tot">{out ? `−${rupees(out)}` : ""}</span>
               </div>
               {g.items.map((t) => (
                 <div className="tx" key={t.id}>
                   <div className="av" aria-hidden="true">
                     {initials(t.merchant)}
                   </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div className="m">{t.merchant}</div>
+                  <div className="min0">
+                    <p className="m">{t.merchant}</p>
                     <div className="meta">
                       {t.direction === "debit" ? (
-                        <button className="catbtn" data-low={t.unsure ? "true" : "false"} onClick={() => onPick(t)} aria-label={`Category ${t.unsure ? "not sure" : catLabel(t.category)}. Change`}>
+                        <button type="button" className="catbtn" data-low={t.unsure ? "true" : "false"} onClick={() => onPick(t)} aria-label={`Category ${t.unsure ? "not sure" : catLabel(t.category)}. Change`}>
                           {t.unsure ? "Not sure yet" : catLabel(t.category)}
                         </button>
                       ) : (
-                        <span className="catbtn" style={{ color: "var(--good)" }}>
-                          Money in
-                        </span>
+                        <span className="intag">Money in</span>
                       )}
                       <span className="src">{t.direction === "debit" ? `${SRC[t.source]}${t.source === "model" && !t.unsure ? ` ${pct(t.confidence)}` : ""}` : t.channel}</span>
                     </div>
                   </div>
-                  <div className={`amt ${t.direction === "credit" ? "in" : ""}`}>{`${t.direction === "credit" ? "+" : "−"}${rupees(t.amount)}`}</div>
+                  <p className={`amt ${t.direction === "credit" ? "in" : ""}`}>{`${t.direction === "credit" ? "+" : "−"}${rupees(t.amount)}`}</p>
                 </div>
               ))}
             </div>
           );
         })}
       </section>
-      <div className="row" style={{ justifyContent: "center", flexWrap: "wrap" }}>
+      <div className="more">
         {rows.length > limit && (
-          <button className="btn small" onClick={() => setLimit((l) => l + 120)}>
+          <button type="button" className="btn small" onClick={() => setLimit((l) => l + 120)}>
             Show more
           </button>
         )}
-        <button className="btn small ghost" onClick={() => setAll((v) => !v)}>
+        <button type="button" className="btn text" onClick={() => setAll((v) => !v)}>
           {all ? "Only this month" : "Show earlier months"}
         </button>
       </div>
@@ -631,82 +658,82 @@ function Forecast({ a, evalScores }) {
   const m = forecast.model;
   return (
     <>
-      <section className="card">
+      <section className="stock chart-sheet" aria-labelledby="bal-h">
         <div className="row between">
-          <div className="label">Balance this month</div>
-          <span className="pill">{`${shortDate(cycle.start)} – ${shortDate(cycle.end)}`}</span>
+          <h2 className="label" id="bal-h">
+            Balance this month
+          </h2>
+          <span className="tag">{`${shortDate(cycle.start)} to ${shortDate(cycle.end)}`}</span>
         </div>
-        <div style={{ marginTop: 10 }}>
-          <RunwayChart a={a} />
-        </div>
+        <RunwayChart a={a} />
       </section>
-      <div className="stat3">
+      <dl className="stats">
         <div>
-          <b className="num">{rupees(forecast.level)}</b>
-          <span>your daily pace</span>
+          <dt>Your daily pace</dt>
+          <dd>{rupees(forecast.level)}</dd>
         </div>
         <div>
-          <b className="num gold">{rupees(safe.daily)}</b>
-          <span>safe daily pace</span>
+          <dt>Safe daily pace</dt>
+          <dd>{rupees(safe.daily)}</dd>
         </div>
         <div>
-          <b className={`num ${forecast.mc.probRunout > 0.5 ? "crit" : "good"}`}>{pct(forecast.mc.probRunout)}</b>
-          <span>chance of running short</span>
+          <dt>Chance of running short</dt>
+          <dd>{pct(forecast.mc.probRunout)}</dd>
         </div>
-      </div>
+      </dl>
 
       {a.bills.length > 0 && (
-        <section className="card">
-          <div className="label">Bills still to come</div>
-          <dl className="kv" style={{ marginTop: 10 }}>
+        <section className="block" aria-labelledby="bills-h">
+          <h2 className="label" id="bills-h">
+            Bills still to come
+          </h2>
+          <dl className="kv">
             {a.bills.map((b) => (
               <React.Fragment key={b.key}>
-                <dt>{`${b.merchant} · ~${shortDate(b.date)}`}</dt>
+                <dt>{`${b.merchant}, around ${shortDate(b.date)}`}</dt>
                 <dd>{rupees(b.amount)}</dd>
               </React.Fragment>
             ))}
           </dl>
-          <p className="note" style={{ marginTop: 8 }}>Spotted automatically: same payee, similar amount, same time each month.</p>
+          <p className="note">Spotted automatically: same payee, similar amount, same time each month.</p>
         </section>
       )}
 
-      <section className="card stack" aria-labelledby="how-h">
-        <div className="label" id="how-h">
+      <section className="block" aria-labelledby="how-h">
+        <h2 className="label" id="how-h">
           How the forecast works
-        </div>
-        <p className="sub">
-          {`Your everyday pace blends this month (${pct(m.mtdWeight)} weight, ${rupees(m.levelMtd ?? 0)}/day) with your history (${pct(1 - m.mtdWeight)}, ${rupees(m.levelHist ?? 0)}/day). Days when you'd already run out are left out, so "making do" isn't mistaken for normal. Bills are scheduled on their own.`}
+        </h2>
+        <p className="prose">
+          {`Your everyday pace blends this month (${pct(m.mtdWeight)} weight, ${rupees(m.levelMtd ?? 0)}/day) with your history (${pct(1 - m.mtdWeight)}, ${rupees(m.levelHist ?? 0)}/day). Days when you’d already run out are left out, so “making do” isn’t mistaken for normal. Bills are scheduled on their own.`}
         </p>
-        <div>
-          <div className="note" style={{ marginBottom: 6 }}>
-            Your spending by weekday (vs your average)
-          </div>
+        <figure className="wkfig">
+          <figcaption className="note">Your spending by weekday (vs your average)</figcaption>
           <WeekdayBars mult={m.mult} />
-        </div>
-        <p className="sub">{`1,500 simulated months, each built from real days of yours, give the likely range: Day ${forecast.mc.p10} to Day ${Math.min(cycle.length, forecast.mc.p90)}.`}</p>
+        </figure>
+        <p className="prose">{`1,500 simulated months, each built from real days of yours, give the likely range: Day ${forecast.mc.p10} to Day ${Math.min(cycle.length, forecast.mc.p90)}.`}</p>
       </section>
 
-      <section className="card stack" aria-labelledby="test-h">
-        <div className="label" id="test-h">
+      <section className="block" aria-labelledby="test-h">
+        <h2 className="label" id="test-h">
           Tested on your past months
-        </div>
+        </h2>
         {bt.cases.length ? (
           <>
-            <p className="sub">{`Standing on Day ${bt.checkDay} of each past month, using only data up to then. Off by ${bt.maeModel.toFixed(1)} days on average, vs ${bt.maeNaive.toFixed(1)} for a simple "spent so far" rule.`}</p>
-            <div style={{ overflowX: "auto" }}>
-              <table className="num" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <p className="prose">{`Standing on Day ${bt.checkDay} of each past month, using only data up to then. Off by ${bt.maeModel.toFixed(1)} days on average, vs ${bt.maeNaive.toFixed(1)} for a simple “spent so far” rule.`}</p>
+            <div className="table-wrap">
+              <table className="bt">
                 <thead>
-                  <tr className="muted" style={{ textAlign: "right" }}>
-                    <th style={{ textAlign: "left", fontWeight: 600, padding: "4px 0" }}>Month</th>
-                    <th style={{ fontWeight: 600 }}>Model</th>
-                    <th style={{ fontWeight: 600 }}>Simple rule</th>
-                    <th style={{ fontWeight: 600 }}>Actual</th>
+                  <tr>
+                    <th scope="col">Month</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Simple rule</th>
+                    <th scope="col">Actual</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bt.cases.map((c) => (
-                    <tr key={c.cycleStart} style={{ textAlign: "right", borderTop: "1px solid var(--line)" }}>
-                      <td style={{ textAlign: "left", padding: "6px 0" }}>{shortDate(c.cycleStart).split(" ")[1]}</td>
+                    <tr key={c.cycleStart}>
+                      <th scope="row">{shortDate(c.cycleStart).split(" ")[1]}</th>
                       <td>{`Day ${c.predicted}`}</td>
                       <td className="muted">{`Day ${c.naive}`}</td>
                       <td>{`Day ${c.actual}`}</td>
@@ -717,15 +744,15 @@ function Forecast({ a, evalScores }) {
             </div>
           </>
         ) : (
-          <p className="sub">Needs at least two full months of history to backtest.</p>
+          <p className="prose">Needs at least two full months of history to backtest.</p>
         )}
       </section>
 
-      <section className="card stack" aria-labelledby="cat-h">
-        <div className="label" id="cat-h">
+      <section className="block" aria-labelledby="cat-h">
+        <h2 className="label" id="cat-h">
           How categories are tagged
-        </div>
-        <p className="sub">{`Known brands (Swiggy, Blinkit, Rapido…) and telling words ("canteen", "xerox", "medical") are matched by rules. Everything else goes to a Naive Bayes model trained on payee names. On ${evalScores.nTest} payees it never saw, the full pipeline gets ${pct(evalScores.accuracy)} right (macro-F1 ${evalScores.macroF1.toFixed(2)}). Payees it can't place are held for you or Claude, and every correction retrains it on the spot.`}</p>
+        </h2>
+        <p className="prose">{`Known brands (Swiggy, Blinkit, Rapido…) and telling words (“canteen”, “xerox”, “medical”) are matched by rules. Everything else goes to a Naive Bayes model trained on payee names. On ${evalScores.nTest} payees it never saw, the full pipeline gets ${pct(evalScores.accuracy)} right (macro-F1 ${evalScores.macroF1.toFixed(2)}). Payees it can’t place are held for you or Claude, and every correction retrains it on the spot.`}</p>
       </section>
     </>
   );
@@ -738,25 +765,36 @@ function Goals({ a, dispatch, setToast }) {
   return (
     <>
       {a.goals.map((g) => (
-        <section className="card goal" key={g.id}>
+        <section className="stock goal" key={g.id} aria-labelledby={`goal-${g.id}`}>
           <div className="row between">
-            <div className="h3">{g.name}</div>
-            <span className="pill">{`by ${shortDate(g.deadline)}`}</span>
+            <h2 className="title" id={`goal-${g.id}`}>
+              {g.name}
+            </h2>
+            <span className="tag">{`by ${shortDate(g.deadline)}`}</span>
           </div>
-          <div className="bar">
+          <div className="bar" aria-hidden="true">
             <i style={{ width: `${g.progress * 100}%` }} />
           </div>
           <div className="row between">
-            <span className="num">
+            <span className="mono figs">
               <b>{rupees(g.saved)}</b>
               <span className="muted">{` of ${rupees(g.target)}`}</span>
             </span>
-            <span className="muted">{pct(g.progress)}</span>
+            <span className="mono muted">{pct(g.progress)}</span>
           </div>
-          <p className="sub" style={{ marginTop: 8 }}>{g.done ? "Done. Enjoy it." : `${rupees(g.perWeek)} a week for ${g.weeksLeft} weeks gets you there.`}</p>
-          <div className="row" style={{ marginTop: 10, flexWrap: "wrap" }}>
+          <p className="sub">
+            {g.done ? (
+              <>
+                <span className="pressed">Done.</span> Enjoy it.
+              </>
+            ) : (
+              `${rupees(g.perWeek)} a week for ${g.weeksLeft} weeks gets you there.`
+            )}
+          </p>
+          <div className="actions">
             {[100, 500].map((v) => (
               <button
+                type="button"
                 key={v}
                 className="btn small"
                 onClick={() => {
@@ -768,18 +806,23 @@ function Goals({ a, dispatch, setToast }) {
                 {rupees(v)}
               </button>
             ))}
-            <button className="btn small ghost" onClick={() => dispatch({ type: "removeGoal", id: g.id })}>
+            <button type="button" className="btn text" onClick={() => dispatch({ type: "removeGoal", id: g.id })}>
               Remove
             </button>
           </div>
         </section>
       ))}
-      {short > 0 && a.goals.length > 0 && <Alert a={{ severity: "info", title: "Fix the runway first", body: `You're ${short} days short this month, so start goal transfers after your allowance on ${shortDate(a.cycle.next)}.` }} />}
-      <section className="card">
-        <div className="label">New goal</div>
+      {short > 0 && a.goals.length > 0 && (
+        <div className="well">
+          <Alert a={{ severity: "info", title: "Fix the runway first", body: `You’re ${short} days short this month, so start goal transfers after your allowance on ${shortDate(a.cycle.next)}.` }} />
+        </div>
+      )}
+      <section className="block" aria-labelledby="newgoal-h">
+        <h2 className="label" id="newgoal-h">
+          New goal
+        </h2>
         <form
-          className="stack"
-          style={{ marginTop: 10 }}
+          className="form"
           onSubmit={(e) => {
             e.preventDefault();
             const target = Math.round(Number(form.target));
@@ -807,7 +850,7 @@ function Goals({ a, dispatch, setToast }) {
             Add goal
           </button>
         </form>
-        <p className="note" style={{ marginTop: 10 }}>Goals and alerts are plain rules, not AI. That's deliberate.</p>
+        <p className="note">Goals and alerts are plain rules, not AI. That’s deliberate.</p>
       </section>
     </>
   );
@@ -825,21 +868,23 @@ function Ask({ a, chat, claude, onAsk, onStop, onClear }) {
   const busy = chat.some((m) => m.pending);
   return (
     <>
-      <section className="card">
+      <section className="block first" aria-labelledby="askp-h">
         <div className="row between">
-          <div className="label">Ask PocketRunway</div>
-          <span className={`pill ${claude.status === "ready" ? "gold" : ""}`}>{claude.status === "ready" ? "Claude" : claude.status === "checking" ? "Connecting…" : "On-device"}</span>
+          <h2 className="label" id="askp-h">
+            Ask PocketRunway
+          </h2>
+          <span className={`tag ${claude.status === "ready" ? "is-on" : ""}`}>{claude.status === "ready" ? "Claude" : claude.status === "checking" ? "Connecting…" : "On-device"}</span>
         </div>
-        <p className="sub" style={{ marginTop: 6 }}>
+        <p className="sub">
           {claude.status === "ready"
-            ? "Claude answers with your numbers and can run what-ifs with the app's tools. The first question asks your permission."
+            ? "Claude answers with your numbers and can run what-ifs with the app’s tools. The first question asks your permission."
             : "Answers come from the on-device engine using your numbers. Inside the Claude app, Claude answers instead."}
         </p>
       </section>
       <div className="chat" aria-live="polite">
         {chat.length === 0 && (
           <div className="bubble bot">
-            {`Hi! It's Day ${a.cycle.dayIndex}. Ask me anything about your money this month.`}
+            {`Hi! It’s Day ${a.cycle.dayIndex}. Ask me anything about your money this month.`}
             <span className="by">PocketRunway</span>
           </div>
         )}
@@ -854,14 +899,14 @@ function Ask({ a, chat, claude, onAsk, onStop, onClear }) {
             ) : (
               m.text
             )}
-            {m.role !== "user" && !m.pending && <span className="by">{m.by === "claude" ? "Claude · from your numbers" : "On-device engine"}</span>}
+            {m.role !== "user" && !m.pending && <span className="by">{m.by === "claude" ? "Claude, from your numbers" : "On-device engine"}</span>}
           </div>
         ))}
         <div ref={endRef} />
       </div>
       <div className="chips">
         {SUGGEST.map((q) => (
-          <button key={q} className="chip" disabled={busy} onClick={() => onAsk(q)}>
+          <button type="button" key={q} className="chip" disabled={busy} onClick={() => onAsk(q)}>
             {q}
           </button>
         ))}
@@ -890,7 +935,7 @@ function Ask({ a, chat, claude, onAsk, onStop, onClear }) {
         )}
       </form>
       {chat.length > 0 && (
-        <button className="btn small ghost" style={{ alignSelf: "center" }} onClick={onClear}>
+        <button type="button" className="btn text center" onClick={onClear}>
           Clear chat
         </button>
       )}
@@ -904,16 +949,17 @@ function CategorySheet({ txn, onClose, onSave }) {
   const [all, setAll] = useState(true);
   return (
     <Sheet title="Category" onClose={onClose}>
-      <div className="card" style={{ background: "var(--card)" }}>
+      <div className="well">
         <div className="row between">
           <b>{txn.merchant}</b>
-          <span className="num">{rupees(txn.amount)}</span>
+          <span className="mono">{rupees(txn.amount)}</span>
         </div>
-        <p className="note" style={{ marginTop: 4, overflowWrap: "anywhere" }}>{`${shortDate(txn.date)} · ${txn.narration}`}</p>
+        <p className="note">{shortDate(txn.date)}</p>
+        <p className="note narration">{txn.narration}</p>
       </div>
       <div className="catlist">
         {CATEGORIES.map((c) => (
-          <button key={c.id} aria-pressed={cat === c.id} onClick={() => setCat(c.id)}>
+          <button type="button" key={c.id} aria-pressed={cat === c.id} onClick={() => setCat(c.id)}>
             {c.label}
           </button>
         ))}
@@ -922,7 +968,7 @@ function CategorySheet({ txn, onClose, onSave }) {
         <input id="cat-all" type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} />
         {`Always use this for ${txn.merchant}`}
       </label>
-      <button className="btn primary" disabled={!cat} onClick={() => onSave(cat, all)}>
+      <button type="button" className="btn primary" disabled={!cat} onClick={() => onSave(cat, all)}>
         Save
       </button>
     </Sheet>
@@ -958,11 +1004,12 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
   };
   return (
     <Sheet title="Your data" onClose={onClose}>
-      <section className="card stack">
+      <section className="well">
         <div className="row between">
-          <div className="h3">{state.source === "import" ? "Using your statement" : "Using Riya's demo data"}</div>
+          <h3 className="title">{state.source === "import" ? "Using your statement" : "Using Riya’s demo data"}</h3>
           {state.source === "import" && (
             <button
+              type="button"
               className="btn small"
               onClick={() => {
                 dispatch({ type: "set", patch: { source: "demo", csv: null, overrides: {}, manual: {}, aiTags: {}, goals: DEMO.goals, settings: { ...s, name: DEMO.name, currentBalance: null } } });
@@ -978,24 +1025,27 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
         <p className="sub">{`${parsed.transactions.length} transactions, ${shortDate(parsed.transactions[0].date)} to ${shortDate(parsed.transactions[parsed.transactions.length - 1].date)}.`}</p>
       </section>
 
-      <section className="stack">
-        <div className="label">Import a bank statement (CSV)</div>
+      <section className="form" aria-labelledby="import-h">
+        <h3 className="label" id="import-h">
+          Import a bank statement (CSV)
+        </h3>
         <p className="sub">Most banks let you download a statement as CSV or Excel (save Excel as CSV). Date, description and amount or debit/credit columns are enough.</p>
-        <label className="btn" htmlFor="csv-file" style={{ position: "relative" }}>
+        <label className="btn file-btn" htmlFor="csv-file">
           <Icon name="upload" size={16} />
           Choose CSV file
-          <input id="csv-file" type="file" accept=".csv,text/csv,text/plain" onChange={onFile} style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }} />
+          <input id="csv-file" type="file" accept=".csv,text/csv,text/plain" onChange={onFile} />
         </label>
         <label className="field" htmlFor="csv-text">
           Or paste it here
           <textarea id="csv-text" rows={4} value={text} onChange={(e) => setText(e.target.value)} placeholder="Date,Narration,Withdrawal Amt.,Deposit Amt.,Closing Balance" />
         </label>
-        <div className="row" style={{ flexWrap: "wrap" }}>
-          <button className="btn small" onClick={() => tryParse(text)} disabled={!text.trim()}>
+        <div className="actions">
+          <button type="button" className="btn small" onClick={() => tryParse(text)} disabled={!text.trim()}>
             Check file
           </button>
           <button
-            className="btn small ghost"
+            type="button"
+            className="btn text"
             onClick={() => {
               const sample = demoCsv.split("\n").slice(0, 40).join("\n");
               setText(sample);
@@ -1011,9 +1061,9 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
           </p>
         )}
         {preview && (
-          <div className="card stack">
+          <div className="well">
             <b>{`Found ${preview.res.transactions.length} transactions`}</b>
-            <p className="sub">{`${shortDate(preview.res.transactions[0].date)} to ${shortDate(preview.res.transactions[preview.res.transactions.length - 1].date)}${preview.res.closingBalance != null ? ` · closing balance ${rupees(preview.res.closingBalance)}` : ""}`}</p>
+            <p className="sub">{`${shortDate(preview.res.transactions[0].date)} to ${shortDate(preview.res.transactions[preview.res.transactions.length - 1].date)}${preview.res.closingBalance != null ? `, closing balance ${rupees(preview.res.closingBalance)}` : ""}`}</p>
             {preview.res.warnings.length > 0 && <p className="note">{`${preview.res.warnings.length} row${preview.res.warnings.length > 1 ? "s" : ""} skipped (unreadable dates).`}</p>}
             {preview.res.closingBalance == null && (
               <label className="field" htmlFor="cur-bal">
@@ -1022,6 +1072,7 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
               </label>
             )}
             <button
+              type="button"
               className="btn primary"
               onClick={() => {
                 dispatch({ type: "set", patch: { source: "import", csv: preview.csv, overrides: {}, manual: {}, aiTags: {}, goals: [], settings: { ...s, name: s.name === DEMO.name ? "" : s.name } } });
@@ -1036,8 +1087,10 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
         )}
       </section>
 
-      <section className="stack">
-        <div className="label">Settings</div>
+      <section className="form" aria-labelledby="settings-h">
+        <h3 className="label" id="settings-h">
+          Settings
+        </h3>
         <div className="grid2">
           <label className="field" htmlFor="set-name">
             Your name
@@ -1060,15 +1113,13 @@ function DataSheet({ state, parsed, demoCsv, dispatch, onClose, setToast, go }) 
         </label>
       </section>
 
-      <section className="card">
-        <div className="row" style={{ alignItems: "flex-start" }}>
-          <Icon name="shield" size={18} className="gold" />
-          <p className="sub">Your statement is read and analysed inside this browser and never uploaded. Only when you ask the assistant a question does a summary of your numbers go to Claude, after you allow it.</p>
-        </div>
+      <section className="well privacy">
+        <Icon name="shield" size={18} />
+        <p className="sub">Your statement is read and analysed inside this browser and never uploaded. Only when you ask the assistant a question does a summary of your numbers go to Claude, after you allow it.</p>
       </section>
       <button
-        className="btn ghost small"
-        style={{ alignSelf: "center" }}
+        type="button"
+        className="btn text center"
         onClick={() => {
           dispatch({ type: "reset" });
           setToast("Reset to the demo.");
