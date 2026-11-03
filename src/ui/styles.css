@@ -1,8 +1,9 @@
 /* Hallmark · shape: app screen · genre: modern-minimal · theme: Coral (deal 1/3, seed upi-payments-budgeting-app-9036·fe746ee9·2026-11-03·r0) · redesign: full
  * nav: kept, a top bar and five bottom tabs; on desktop the story is printed on the desk beside the app's sheet · signature: the day's safe-to-spend printed on a cotton slip, with the month's runway ruled in ink under it · states: loading (Claude connecting, tagging, thinking), empty (no matching spends, no backtest yet), error (CSV import, Claude fallbacks), full
- * axes: light/grotesk-sans/warm · posture: restrained · contrast: pass · v2.0.0 */
+ * axes: light/grotesk-sans/warm · modes: light+dark · posture: restrained · contrast: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: P, a calm money app is a common register; argued as stationery a student keeps, one slip a day, the month ruled in ink, nothing in alarm red */
 /* Hallmark · dismissed 11 · the 1px lift is Coral's letterpress control material on buttons, chips, the stepper and the goal record; no card, chart or image lifts */
+/* Hallmark · dismissed 41 · .legend i.band is an empty swatch; its 30% fill is dark mode's band colour and carries no text */
 /* Hallmark · answered F4 · cotton letterpress cards are Coral's secondary control; each screen and sheet has one ink primary */
 /* Hallmark · answered F25 · the desktop story is the About sheet on phones, one tap from the top bar's info button */
 /* Hallmark · finish-review: in-thread · 2 findings · 2 resolved (the tab mark moved under its label, the course line spaced from the foot) · gap: the coral settled state stays unseen while the demo runs short */
@@ -231,12 +232,15 @@ input, select, textarea { color: inherit; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { position: relative; flex: none; min-height: 36px; padding-inline: var(--space-sm); border: 0; border-radius: var(--radius-stock); background-color: var(--color-cotton); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 500; box-shadow: var(--edge-stock), var(--cast-stock); }
 .chip::before { content: ""; position: absolute; inset: -4px 0; }
-.chip[aria-pressed="true"] { background: var(--color-paper-3); color: var(--color-print); box-shadow: var(--press-groove); }
+.chip[aria-pressed="true"], .chip[data-on="true"] { background: var(--color-paper-3); color: var(--color-print); box-shadow: var(--press-groove); }
 .chip:active { transform: translateY(1px); box-shadow: var(--edge-stock); }
 .chip:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+/* a chip can wrap a radio: the input stays in the tab order, hidden, and the chip shows its state and focus */
+label.chip { display: inline-flex; align-items: center; cursor: pointer; }
+.chip:has(> input:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 
 @media (hover: hover) {
-  .iconbtn:hover, .btn:hover, .chip:not([aria-pressed="true"]):hover, .stepper button:hover, .catbtn:not([data-low="true"]):hover, .catlist button:not([aria-pressed="true"]):hover, .goal-sum:hover { transform: translateY(-1px); box-shadow: var(--edge-stock), var(--cast-stock-lift); }
+  .iconbtn:hover, .btn:hover, .chip:not([aria-pressed="true"]):not([data-on="true"]):hover, .stepper button:hover, .catbtn:not([data-low="true"]):hover, .catlist button:not([aria-pressed="true"]):hover, .goal-sum:hover { transform: translateY(-1px); box-shadow: var(--edge-stock), var(--cast-stock-lift); }
   .iconbtn:hover { color: var(--color-ink); }
   .btn.primary:hover { box-shadow: var(--cast-stock-lift); }
   .btn.text:hover { transform: none; box-shadow: none; color: var(--color-ink); text-decoration-color: var(--color-accent-2); }
@@ -343,7 +347,7 @@ input, select, textarea { color: inherit; }
 .goal .figs b { font-weight: 400; color: var(--color-print); }
 .form { display: flex; flex-direction: column; gap: var(--space-sm); }
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
-.field { display: grid; gap: var(--space-2xs); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 500; }
+.field, .choice { display: grid; gap: var(--space-2xs); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 500; }
 .field input, .field select, .field textarea, .composer input {
   width: 100%;
   min-width: 0;
@@ -389,7 +393,7 @@ input, select, textarea { color: inherit; }
 @keyframes blink { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
 
 /* ---------- sheets and the toast ---------- */
-.scrim { position: absolute; inset: 0; z-index: var(--z-modal); display: flex; align-items: flex-end; background: color-mix(in oklab, var(--color-ink) 40%, transparent); }
+.scrim { position: absolute; inset: 0; z-index: var(--z-modal); display: flex; align-items: flex-end; background: var(--color-scrim); }
 .sheet {
   width: 100%;
   max-height: 88%;
