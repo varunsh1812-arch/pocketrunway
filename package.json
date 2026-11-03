@@ -1,0 +1,23 @@
+{
+  "name": "pocketrunway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PocketRunway: AI money-runway forecaster for students and first-time earners (Group 8, I&E Assignment 2 prototype)",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:artifact": "node scripts/build.mjs --cdn-react",
+    "test": "node --test tests/*.test.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "sample": "node scripts/export-sample.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.1"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}
