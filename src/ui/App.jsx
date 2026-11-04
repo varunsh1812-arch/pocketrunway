@@ -590,7 +590,6 @@ function Spends({ a, txns, unsure, claude, tagging, onTag, onPick }) {
               Review them
             </button>
           </div>
-          {claude.status !== "ready" && <p className="note">Inside the Claude app, Claude can tag these for you.</p>}
         </section>
       )}
 
@@ -892,7 +891,7 @@ function Ask({ a, chat, claude, onAsk, onStop, onClear }) {
         <p className="sub">
           {claude.status === "ready"
             ? "Claude answers with your numbers and can run what-ifs with the app’s tools. The first question asks your permission."
-            : "Answers come from the on-device engine using your numbers. Inside the Claude app, Claude answers instead."}
+            : "Answers are worked out on this device, from your own numbers."}
         </p>
       </section>
       <div className="chat" aria-live="polite">
